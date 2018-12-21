@@ -3,6 +3,7 @@
 1. [Variable scope](#variable-scope)
 2. [Context](#context)
 3. [Closure](#closure)
+4. [call, apply and bind](#call-apply-and-bind)
 
 ## Variable scope
 
@@ -154,4 +155,40 @@ var mjID = userid (); // At this juncture, the celebrityID outer function has re
 mjID.getID(); // 999
 mjID.setID(567); // Changes the outer function's variable
 mjID.getID(); // 567: It returns the updated id variable
+```
+
+## `call`, `apply` and `bind`
+Call and Apply functions are used to change the context while calling a function. To use the call or apply function, you just need to call it on the function instead of invoking the function using a pair of parenthesis and pass the context as the first argument. The function's own arguments can be passed after the context.
+### using `call`
+Instead of calling the function directly, add `call` after the function name and pass the context as the first parameter.
+```
+function greet(greeter) { 
+  console.log(greeter + ' ' + this.name);
+}
+var obj = { name: 'John Doe' };
+greet.call(obj, 'Hello');
+```
+### using `apply`
+The difference between `.call()` and `.apply()` is that in Call, we pass the rest of the arguments as a list separated by a comma while `apply` allows us to pass the arguments in an array.
+```
+function greet(greeter) { 
+  console.log(greeter + ' ' + this.name);
+}
+var obj = { name: 'John Doe' };
+greet.apply(obj, ['Hello']);
+```
+We can also pass the context value as `null` if it is not used inside the function.
+```
+Math.max.apply(null, [2, 4, 6]); // 6
+```
+_Call_ is slightly faster in performance than _Apply_.
+### Using `bind`
+Unlike Call and Apply, Bind doesn't itself call the function, it can only be used to bind the value of context and other arguments before calling the function.
+```
+function greet() { 
+  console.log('Hello ' + this.name);
+}
+var obj = { name: 'John Doe' };
+var greetFn = greet.bind(obj);
+greetFn(); // Hello John Doe
 ```
