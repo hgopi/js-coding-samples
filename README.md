@@ -4,6 +4,7 @@
 2. [Context](#context)
 3. [Closure](#closure)
 4. [call, apply and bind](#call-apply-and-bind)
+5. [Functions](#functions)
 
 ## Variable scope
 
@@ -191,4 +192,102 @@ function greet() {
 var obj = { name: 'John Doe' };
 var greetFn = greet.bind(obj);
 greetFn(); // Hello John Doe
+```
+## Functions
+Functions are the main “building blocks” of the program. They allow the code to be called many times without repetition.
+
+### Function declaration
+A function declaration looks like this:
+```
+function greet() {
+  alert( 'Hello everyone!' );
+}
+```
+The `function` keyword goes first, then goes the name of the function, then a list of parameters between the parentheses (empty in the example above) and finally the code of the function, also named “the function body”, between curly braces.
+
+There are few points to be noted: A variable declared inside a function is only visible inside that function. A function can access an outer variable as well. But the outer variable is only used if there’s no local one. A function can return a value back into the calling code as the result.
+
+```
+function sum(a, b) {
+  return a + b;
+}
+let result = sum(1, 2);
+alert( result ); // 3
+```
+The directive `return` can be in any place of the function. When the execution reaches it, the function stops, and the value is returned to the calling code (assigned to result above). It would not continue further once `return` is reaced.
+### Function declaration hoisting
+Function declarations in JavaScript are hoisted to the top of the enclosing function or global scope. It means they are moved to top of the execution context. You can use the function before you declared it:
+```
+hoisted(); // logs "foo"
+
+function hoisted() {
+  console.log('foo');
+}
+```
+### Function parameters
+We can pass arbitrary data to functions using parameters (also called function arguments) .
+```
+function greet(from, text) { // arguments: from, text
+  alert(from + ': ' + text);
+}
+greet('Ann', 'Hello!'); // Ann: Hello
+```
+If a parameter is not provided, then its value becomes `undefined`. If we want to use a “default” text in this case, then we can specify it after `=` in ES6:
+```
+function greet(from, text = "Hi") {
+  alert( from + ": " + text );
+}
+greet("Ann"); // Ann: Hi
+```
+The alternate way to provide default parameter is as follow:
+```
+function greet(from, text) {
+  if (text === undefined) {
+    text = 'no text given';
+  }
+  alert( from + ": " + text );
+}
+```
+### Function expression
+A function expression is very similar to function statement. The main difference between a function expression and a function statement is the function name, which can be omitted in function expressions to create anonymous functions.
+```
+var greet = function(name) {
+    return "Hello " + name;
+}
+```
+Function expressions in JavaScript are not hoisted, unlike function declarations. You can't use function expressions before you define them:
+```
+console.log(notHoisted) // undefined 
+//even though the variable name is hoisted, the definition isn't. so it's undefined.
+notHoisted(); // TypeError: notHoisted is not a function
+
+var notHoisted = function() {
+   console.log('bar');
+};
+```
+
+###  IIFE (Immediately Invoked Function Expression)
+An IIFE (Immediately Invoked Function Expression) is a JavaScript function that runs as soon as it is defined.
+```
+(function () {
+    statements
+})();
+```
+It is a design pattern which is also known as a Self-Executing Anonymous Function and contains two major parts. The first is the anonymous function with lexical scope enclosed within the Grouping Operator `()`. This prevents accessing variables within the IIFE as well as polluting the global scope.
+
+The second part creates the immediately executing function expression `()` through which the JavaScript engine will directly interpret the function.
+### Named function expression
+If you want to refer to the current function inside the function body, you need to create a named function expression. This name is then local only to the function body (scope). 
+```
+var math = {
+  'factit': function factorial(n) {
+    console.log(n)
+    if (n <= 1) {
+      return 1;
+    }
+    return n * factorial(n - 1);
+  }
+};
+
+math.factit(3) //3;2;1;
 ```
