@@ -1,5 +1,9 @@
 # Javascript Code samples
 
+1. [Variable scope](#variable-scope)
+2. [Context](#context)
+3. [Closure](#closure)
+
 ## Variable scope
 
 ### Global scope
@@ -109,4 +113,45 @@ var obj = {
   }
 };
 obj.greet(); // Hello John Doe
+```
+
+## Closure
+### What is Closure?
+ A Closure is created when an inner function tries to access the scope chain of its outer function meaning the variables outside of the immediate lexical scope. It means the inner function can access the outer function's variables.
+ ```
+ function greet() {
+    name = 'John Doe';
+    return function () {
+        console.log('Hi ' + name);
+    }
+}
+greetLetter = greet();
+greetLetter(); // logs 'Hi John Doe'
+```
+ A closure can not only access the variables defined in its outer function but also the arguments of the outer function.
+ ### Closure access outer scope
+ Closures store references to the outer function's variables; they do not store the actual value. Closures get more interesting when the value of the outer function's variable changes before the closure is called. And this powerful feature can be harnessed in creative ways, such as this private variables.
+ ```
+ function userid () {
+    var id = 999;
+    // We are returning an object with some inner functions
+    // All the inner functions have access to the outer function's variables
+    return {
+        getID: function ()  {
+            // This inner function will return the UPDATED id variable
+            // It will return the current value of id, even after the function changes it
+          return id;
+        },
+        setID: function (theNewID)  {
+            // This inner function will change the outer function's variable anytime
+            id = theNewID;
+        }
+    }
+
+}
+
+var mjID = userid (); // At this juncture, the celebrityID outer function has returned.
+mjID.getID(); // 999
+mjID.setID(567); // Changes the outer function's variable
+mjID.getID(); // 567: It returns the updated id variable
 ```
