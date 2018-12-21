@@ -66,3 +66,47 @@ try {
 }
 console.log(e) // Uncaught ReferenceError: e is not defined
 ```
+## Context
+Often scope and context are confused among the developers. Scope refers to the visibility of the variable and context refers to the value of the `this` keyword.
+
+### `this` in Global scope
+In a global scope, `this` always refers to the `window` object. All global JavaScript objects, functions, and variables automatically become members of the `window` object.
+```
+console.log(this);
+// logs: Window {postMessage: f, blur: f, focus: f, frames: Window, …}
+```
+### `this` with new
+If scope is in the method of an object, context will be the object the method is part of.
+```
+function User() { 
+  console.log(this);
+}
+new User(); // User {}
+```
+If we call a function using the `new` keyword, the context will then be set to the instance of the called function.
+
+### `this` with bind
+If we bind a function explicitly with some object, then the `this` inside function will be set to the object we bind.
+```
+function greet() { 
+  console.log('Hello ' + this.name);
+}
+var obj = { name: 'John Doe' };
+var greetFn = greet.bind(obj);
+greetFn(); // Hello John Doe
+
+// calling greet function normally will take window object for this.
+var name = 'Albert';
+greet(); // Hello Albert
+```
+### `this` inside method
+If we call a method of an object, then `this` will be automatically set to the current object.
+```
+var obj = {
+  name: 'John Doe',
+  greet: function() {
+    console.log('Hello ' + this.name);
+  }
+};
+obj.greet(); // Hello John Doe
+```
