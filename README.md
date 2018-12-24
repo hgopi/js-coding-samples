@@ -12,7 +12,7 @@
 10. [Maps and Sets](#maps-and-sets)
 11. [Iterables and iterators](#iterables-and-iterators)
 12. [Generators](#generators)
-
+12. [async and await function](#async-and-await-function)
 ## Variable scope
 
 The scope is the current context of execution. The context in which values and expressions are "visible," or can be referenced. If a variable or other expression is not "in the current scope," then it is unavailable for use. Scopes can also be layered in a hierarchy, so that child scopes have access to parent scopes, but not vice versa.
@@ -706,6 +706,31 @@ for (const x of iterable) {
 // Output:
 // a
 // b
+```
+
+### `async` and `await` function
+The `async` function declaration defines an asynchronous function, which returns an `AsyncFunction` object. An asynchronous function is a function which operates asynchronously via the event loop, using an implicit Promise to return its result. 
+
+An `async` function can contain an `await` expression that pauses the execution of the async function and waits for the passed Promise's resolution, and then resumes the async function's execution and returns the resolved value.
+
+Remember, the `await` keyword is only valid inside async functions. If you use it outside of an `async` function's body, you will get a SyntaxError.
+```
+function resolveAfter2Seconds() {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve('resolved');
+    }, 2000);
+  });
+}
+
+async function asyncCall() {
+  console.log('calling');
+  var result = await resolveAfter2Seconds();
+  console.log(result);
+  // expected output: 'resolved'
+}
+
+asyncCall();
 ```
 ### Proxy Object
 The Proxy object is used to define custom behavior for fundamental operations (e.g. property lookup, assignment, enumeration, function invocation, etc). The syntax is:
