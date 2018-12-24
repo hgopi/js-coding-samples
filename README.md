@@ -694,6 +694,19 @@ var output = myTag`That ${ person } is a ${ age }`;
 console.log(output);
 // That Mike is a youngster
 ```
+### `for-of` loop
+`for-of` is a new loop in ES6 that replaces both `for-in` and `forEach()` and supports the new iteration protocol.
+Use it to loop over iterable objects (Arrays, strings, Maps, Sets, etc.):
+```
+const iterable = ['a', 'b'];
+for (const x of iterable) {
+    console.log(x);
+}
+
+// Output:
+// a
+// b
+```
 ### Proxy Object
 The Proxy object is used to define custom behavior for fundamental operations (e.g. property lookup, assignment, enumeration, function invocation, etc). The syntax is:
 ```
