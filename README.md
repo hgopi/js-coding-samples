@@ -645,7 +645,52 @@ console.log(b);
 console.log(rest);
 // expected output: [30,40,50]
 ```
+### Template Literals
+Template literals are string literals allowing embedded expressions. You can use multi-line strings and string interpolation features with them. They were called "template strings" in prior editions of the ES6 specification.
 
+Template literals are enclosed by the back-tick (` `)  (grave accent) character instead of double or single quotes. Template literals can contain placeholders. These are indicated by the dollar sign and curly braces (`${expression}`). The expressions in the placeholders and the text between them get passed to a function. The default function just concatenates the parts into a single string. 
+```
+const firstName = 'Jane';
+console.log(`Hello ${firstName}!
+How are you
+today?`);
+
+// Output:
+// Hello Jane!
+// How are you
+// today?
+```
+### Tagged templates
+A more advanced form of template literals are tagged templates. Tags allow you to parse template literals with a function. The first argument of a tag function contains an array of string values. The remaining arguments are related to the expressions. In the end, your function can return your manipulated string (or it can return something completely different as described in the next example). The name of the function used for the tag can be whatever you want.
+```
+var person = 'Mike';
+var age = 28;
+
+function myTag(strings, personExp, ageExp) {
+  var str0 = strings[0]; // "That "
+  var str1 = strings[1]; // " is a "
+
+  // There is technically a string after
+  // the final expression (in our example),
+  // but it is empty (""), so disregard.
+  // var str2 = strings[2];
+
+  var ageStr;
+  if (ageExp > 99){
+    ageStr = 'centenarian';
+  } else {
+    ageStr = 'youngster';
+  }
+
+  // We can even return a string built using a template literal
+  return `${str0}${personExp}${str1}${ageStr}`;
+}
+
+var output = myTag`That ${ person } is a ${ age }`;
+
+console.log(output);
+// That Mike is a youngster
+```
 ### Proxy Object
 The Proxy object is used to define custom behavior for fundamental operations (e.g. property lookup, assignment, enumeration, function invocation, etc). The syntax is:
 ```
