@@ -12,6 +12,7 @@
 10. [Maps and Sets](#maps-and-sets)
 11. [Iterables and iterators](#iterables-and-iterators)
 12. [Generators](#generators)
+13. [Coding Problems](#coding-problems)
 
 ## Variable scope
 
@@ -1268,4 +1269,248 @@ Started
 genObj1.return('Result')
 Exiting
 { value: 'Result', done: true }
+```
+## Coding Problems
+### Check prime number
+A prime number is only divisible by itself and 1.
+```
+function isPrime(num) {
+  for(var i = 2; i < num; i++)
+    if(num % i === 0) return false;
+  return num !== 1 && num !== 0;
+}
+
+isPrime(137); // true
+```
+### Check prime number another way
+You can decrease complexity of the function if you run the loop until square root of number:
+```
+function isPrime (num) {
+    for(let i = 2, s = Math.sqrt(num); i <= s; i++) {
+        if(num % i === 0) return false; 
+    }
+    return num !== 1 && num !== 0;
+}
+```
+### Find all the prime factors of the given number
+```
+function findPrimeFactors (num) {
+
+    var primeFactors = [];
+    while (num % 2 === 0) {
+        primeFactors.push(2);
+        num = num / 2;
+    }
+    
+    var sqrtNum = Math.sqrt(num);
+    for (var i = 3; i <= sqrtNum; i++) {
+        while (num % i === 0) {
+            primeFactors.push(i);
+            num = num / i;
+        }
+    }
+
+    if (num > 2) {
+        primeFactors.push(num);
+    }
+    return primeFactors;
+}
+
+console.log(findPrimeFactors(10)); // [2, 5]
+console.log(findPrimeFactors(11)); // [11]
+```
+### Find the nth Fibonacci number
+```
+function fibonacci(n){
+  if(n<=1)
+    return n;
+  else
+    return fibonacci(n-1) + fibonacci (n-2);  
+}
+
+fibonacci(12); // 144
+```
+### Find Greatest Common Divisor
+Using Euclidean algorithm:
+```
+function greatestCommonDivisor(a, b){
+   if(b == 0) {
+     return a;
+    }
+   else {
+     return greatestCommonDivisor(b, a%b);
+    }
+}
+
+greatestCommonDivisor(14, 21); // 7
+```
+### Remove duplicate element from an array
+Using `Array.filter` method, check each element's index is equal to the `indexOf` value of the array.
+```
+function removeDuplicate(arr) {
+	return arr.filter((element, index, array) => array.indexOf(element) === index);
+}
+```
+Or in ES6 using `set`:
+```
+function removeDuplicate(arr) {
+	return Array.from(new Set(arr))
+}
+```
+### Merge two sorted arrays
+Given two arrays of same length, merge them into sing array in ascending order.
+```
+function mergeSortedArray(arr1, arr2) {
+    return [...arr1, ...arr2].sort((a, b) => a - b)
+}
+
+mergeSortedArray([2,5,6,9], [1,2,3,29]);
+//  [1, 2, 2, 3, 5, 6, 9, 29]
+```
+### Swap two variables without temp
+```
+function swapNumb(a, b){
+  b = b - a;
+  a = a + b;
+  b = a - b;
+}
+```
+Using ES6:
+```
+function swapNumb(a, b) {
+  console.log('before swap: ' + a + ' ' + b);
+  [a, b] = [b, a];
+  console.log('after swap: ' + a + ' ' + b);
+}
+```
+### String reverse
+Given a string, print the reverse of the string (ex: javascript becomes tpircsavaj).
+
+Without native methods:
+```
+function reverse(str){
+  var rtnStr = [];
+  if(!str || typeof str != 'string' || str.length < 2 ) return str;
+  
+  for(var i = str.length-1; i>=0;i--){
+    rtnStr.push(str[i]);
+  }
+  return rtnStr.join('');
+}
+```
+Using recursion:
+```
+function reverse (str) {
+    if (str === "") {
+        return "";
+    } else {
+        return reverse(str.substr(1)) + str.charAt(0);
+    }
+}
+```
+Using native methods:
+```
+function reverse(str){
+  if(!str || str.length <2) return str;
+  
+  return str.split('').reverse().join('');
+}
+```
+### Reverse in Place
+Given a string, reverse the letters of word but preserve the word order (ex: "I am the good boy" becomes "I ma eht doog yob")
+```
+function reverseInPlace(str){
+  return str.split(' ').reverse().join(' ').split('').reverse().join('');
+}
+```
+### Print the first non repeating character in a string
+Given a string, print the first non-repeating letter in the string.
+```
+function firstNonRepeatedCharacter(string) {
+  for (var i = 0; i < string.length; i++) {
+    var c = string.charAt(i);
+    if (string.indexOf(c) == i && string.indexOf(c, i + 1) == -1) {
+      return c;
+    }
+  }
+  return null;
+}
+```
+The `indexOf` method takes one additional optional parameter `start` at which index start the search. So check if the character is found after the current index.
+### Check if a given string is palindrom
+A string is palindrom if the reverse order is same as original.
+```
+function checkPalindrom(str) {
+    return str == str.split('').reverse().join('');
+}
+```
+### Generate random number between two given
+```
+function generateRandom(start, end) {
+    return Math.floor(Math.random() * end) + start;  
+}
+```
+### Find the missing number
+Given a unsorted array of numbers 1 to 100 excluding one number, find the missing number.
+
+The sum of a linear series of n numbers is equal to n*(n+1)/2.
+
+```
+function missingNumber(arr){
+  var n = arr.length+1, 
+  sum = 0,
+  expectedSum = n* (n+1)/2;
+  
+  sum = arr.reduce((total, num) => total + num);
+  return expectedSum - sum;
+}
+
+missingNumber([5, 2, 6, 1, 3]);
+// 4
+```
+### Find the largest and smallest number in an array
+Given an unsorted array, find the largest and smallest number.
+```
+function findLargestAndSmallest(arr) {
+    arr = arr.sort((a, b) => a - b);
+    return [arr[0], arr[arr.length - 1]];
+}
+
+findLargestAndSmallest([1, 100, 2, -1, 2, 0])
+// [-1, 100]
+```
+Using native mehtods and `apply`:
+```
+function findLargestAndSmallest(arr) {
+    let smallest = Math.min.apply(null, arr);
+    let largest = Math.max.apply(null, arr);
+	return [smallest, largest];
+}
+```
+### Permutations of a string
+Get all permutations of a string
+```
+function permut(string) {
+    if (string.length < 2) return string; // This is our break condition
+
+    var permutations = []; // This array will hold our permutations
+
+    for (var i=0; i<string.length; i++) {
+        var char = string[i];
+
+        // Cause we don't want any duplicates:
+        if (string.indexOf(char) != i) // if char was used already
+            continue;           // skip it this time
+
+        var remainingString = string.slice(0,i) + string.slice(i+1,string.length);
+
+        for (var subPermutation of permut(remainingString))
+            permutations.push(char + subPermutation)
+
+    }
+    return permutations;
+}
+
+let permutations = permut('xyz');
+// ["xyz", "xzy", "yxz", "yzx", "zxy", "zyx"]
 ```
