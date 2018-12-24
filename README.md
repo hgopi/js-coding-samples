@@ -9,6 +9,7 @@
 7. [ES6](#es6)
 8. [Class](#class)
 9. [Promises](#promises)
+10. [Maps and Sets](#maps-and-sets)
 
 ## Variable scope
 
@@ -1031,4 +1032,78 @@ createResource(···)
 .finally(function () {
     // Clean up
 });
+```
+## Maps and Sets
+Among others, the following four data structures are new in ECMAScript 6: `Map`, `WeakMap`, `Set` and `WeakSet`.
+
+### Map
+The `Map` object holds key-value pairs and remembers the original insertion order of the keys. Any value (both objects and primitive values) may be used as either a key or a value.
+```
+var myMap = new Map();
+
+var keyString = 'a string',
+    keyObj = {},
+    keyFunc = function() {};
+
+// setting the values
+myMap.set(keyString, "value associated with 'a string'");
+myMap.set(keyObj, 'value associated with keyObj');
+myMap.set(keyFunc, 'value associated with keyFunc');
+
+myMap.size; // 3
+
+// getting the values
+myMap.get(keyString);    // "value associated with 'a string'"
+myMap.get(keyObj);       // "value associated with keyObj"
+myMap.get(keyFunc);      // "value associated with keyFunc"
+
+myMap.get('a string');   // "value associated with 'a string'"
+                         // because keyString === 'a string'
+myMap.get({});           // undefined, because keyObj !== {}
+myMap.get(function() {}) // undefined, because keyFunc !== function () {}
+```
+Objects and Maps are similar in many ways. However, there are important differences that make using a Map preferable in certain cases:
+* The keys of an Object are Strings and Symbols, whereas they can be any value for a Map, including functions, objects, and any primitive.
+* The keys in Map are ordered while keys added to object are not. 
+* You can get the size of a Map easily with the size property, while the number of properties in an Object must be determined manually.
+* An Object has a prototype, so there are default keys in the map that could collide with your keys if you're not careful.
+
+### WeakMap 
+`WeakMap` holds "weak" references to key objects, which means that they do not prevent garbage collection in case there would be no other reference to the key object.  This also avoids preventing garbage collection of values in the map.  Native WeakMaps can be particularly useful constructs when mapping keys to information about the key that is valuable only if the key has not been garbage collected.
+
+Because of references being weak, WeakMap keys are not enumerable (i.e. there is no method giving you a list of the keys). If they were, the list would depend on the state of garbage collection, introducing non-determinism. If you want to have a list of keys, you should use a Map.
+```
+var wm1 = new WeakMap();
+var o1 = {};
+wm1.set(o1, 37);
+```
+### Set
+Set objects are collections of values. Also the `Set` object lets you store unique values of any type, whether primitive values or object references.
+```
+var mySet = new Set();
+
+mySet.add(1); // Set [ 1 ]
+mySet.add(5); // Set [ 1, 5 ]
+mySet.add(5); // Set [ 1, 5 ]
+mySet.add('some text'); // Set [ 1, 5, 'some text' ]
+var o = {a: 1, b: 2};
+mySet.add(o);
+
+mySet.size; // 4
+
+mySet.delete(5); // removes 5 from the set
+mySet.has(5);    // false, 5 has been removed
+```
+### WeakSet
+A `WeakSet` is a Set that doesn’t prevent its elements from being garbage-collected. Consult the section on WeakMap for an explanation of why WeakSets don’t allow iteration, looping and clearing.
+```
+var ws = new WeakSet();
+var foo = {};
+var bar = {};
+
+ws.add(foo);
+ws.add(bar);
+
+ws.has(foo);    // true
+ws.has(bar);    // true
 ```
