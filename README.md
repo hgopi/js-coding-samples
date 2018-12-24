@@ -11,6 +11,7 @@
 9. [Promises](#promises)
 10. [Maps and Sets](#maps-and-sets)
 11. [Iterables and iterators](#iterables-and-iterators)
+12. [Generators](#generators)
 
 ## Variable scope
 
@@ -1146,4 +1147,76 @@ var it = makeIterator(['yo', 'ya']);
 console.log(it.next().value); // 'yo'
 console.log(it.next().value); // 'ya'
 console.log(it.next().done);  // true
+```
+
+## Generators
+Generators are functions that can be paused and resumed (think cooperative multitasking or coroutines), which enables a variety of applications.
+### A simple generator
+The `function*` declaration (function keyword followed by an asterisk) defines a generator function, which returns a Generator object.
+```
+function* idMaker() {
+    var index = 0;
+    while(true)
+        yield index++;
+}
+
+var gen = idMaker(); // "Generator { }"
+
+console.log(gen.next().value); // 0
+console.log(gen.next().value); // 1
+console.log(gen.next().value); // 2
+// ...
+```
+The objects returned by generators are iterable; each `yield` contributes to the sequence of iterated values. Therefore, you can use generators to implement iterables, which can be consumed by various ES6 language mechanisms: `for-of` loop, spread operator (`...`), etc.
+### Kinds of Generators
+There are four kinds of generators:
+1. Generator function declarations:
+```
+function* genFunc() { ··· }
+const genObj = genFunc();
+```
+2. Generator function expressions:
+```
+const genFunc = function* () { ··· };
+const genObj = genFunc();
+```
+3. Generator method definitions in object literals:
+```
+const obj = {
+     * generatorMethod() {
+         ···
+     }
+ };
+```
+4. Generator method definitions in class definitions (class declarations or class expressions):
+```
+class MyClass {
+     * generatorMethod() {
+         ···
+     }
+ }
+```
+### Terminate a Generator
+`return()` performs a return at the location of the `yield` that led to the last suspension of the generator. 
+```
+function* genFunc1() {
+    try {
+        console.log('Started');
+        yield; // (A)
+    } finally {
+        console.log('Exiting');
+    }
+}
+```
+In the following interaction, we first use `next()` to start the generator and to proceed until the yield in line A. Then we return from that location via `return()`.
+```
+const genObj1 = genFunc1();
+
+genObj1.next()
+Started
+{ value: undefined, done: false }
+
+genObj1.return('Result')
+Exiting
+{ value: 'Result', done: true }
 ```
