@@ -5,6 +5,7 @@
 3. [Closure](#closure)
 4. [call, apply and bind](#call-apply-and-bind)
 5. [Functions](#functions)
+6. [Objects](#objects)
 
 ## Variable scope
 
@@ -291,3 +292,250 @@ var math = {
 
 math.factit(3) //3;2;1;
 ```
+## Objects
+Objects in JavaScript, just as in many other programming languages, can be compared to objects in real life. The concept of objects in JavaScript can be understood with real life, tangible objects.
+
+In JavaScript, an object is a standalone entity, with properties and type. Compare it with a cup, for example. A cup is an object, with properties. A cup has a color, a design, weight, a material it is made of, etc. The same way, JavaScript objects can have properties, which define their characteristics.
+
+A JavaScript object has properties associated with it. A property of an object can be explained as a variable that is attached to the object. Object properties are basically the same as ordinary JavaScript variables, except for the attachment to objects. The properties of an object define the characteristics of the object. You access the properties of an object with a simple dot-notation
+
+```
+objectName.propertyName
+```
+JavaScript has a number of predefined objects. In addition, you can create your own objects. There are some ways from which we can create new objects.
+### Object declration using initializers
+You can create objects using an object initializer. Using object initializers is sometimes referred to as creating objects with literal notation.
+
+The syntax for an object using an object initializer is:
+```
+var x = {greeting: 'hi there'};
+var honda = {color: 'red', wheels: 4, engine: {cylinders: 4, size: 2.2}};
+```
+### Object declration using constructor function
+Alternatively, you can create an object with these two steps:
+1. Define the object type by writing a constructor function. There is a strong convention, with good reason, to use a capital initial letter.
+2. Create an instance of the object with new.
+
+To define an object type, create a function for the object type that specifies its name, properties, and methods. For example, suppose you want to create an object type for cars. You want this type of object to be called Car, and you want it to have properties for make, model, and year. To do this, you would write the following function:
+```
+function Car(make, model, year) {
+  this.make = make;
+  this.model = model;
+  this.year = year;
+}
+```
+Now you can create an object called mycar as follows:
+```
+var mycar = new Car('Eagle', 'Talon TSi', 1993);
+```
+
+### Object declration using `Object.create` method
+Objects can also be created using the Object.create() method. This method can be very useful, because it allows you to choose the prototype object for the object you want to create, without having to define a constructor function.
+```
+// Animal properties and method encapsulation
+var Animal = {
+  type: 'Invertebrates', // Default value of properties
+  displayType: function() {  // Method which will display type of Animal
+    console.log(this.type);
+  }
+};
+
+// Create new animal type called animal1 
+var animal1 = Object.create(Animal);
+```
+### Object declration With the `class` keyword
+ES6 introduced a new set of keywords implementing classes. The new keywords include `class`, `constructor`, `static`, `extends`, and `super`.
+```
+'use strict';
+
+class Polygon {
+  constructor(height, width) {
+    this.height = height;
+    this.width = width;
+  }
+}
+
+class Square extends Polygon {
+  constructor(sideLength) {
+    super(sideLength, sideLength);
+  }
+  get area() {
+    return this.height * this.width;
+  }
+  set sideLength(newLength) {
+    this.height = newLength;
+    this.width = newLength;
+  }
+}
+
+var square = new Square(2);
+```
+### Defining getters and setters
+A _getter_ is a method that gets the value of a specific property. A _setter_ is a method that sets the value of a specific property. You can define getters and setters on any predefined core object or user-defined object that supports the addition of new properties. The syntax for defining getters and setters uses the object literal syntax.
+
+The following illustrates how getters and setters could work for a user-defined object `o`.
+```
+var o = {
+  a: 7,
+  get b() { 
+    return this.a + 1;
+  },
+  set c(x) {
+    this.a = x / 2;
+  }
+};
+
+console.log(o.a); // 7
+console.log(o.b); // 8
+o.c = 50;
+console.log(o.a); // 25
+```
+### Deleting properties
+You can remove a non-inherited property by using the delete operator. The following code shows how to remove a property.
+```
+var myobj = new Object;
+myobj.a = 5;
+myobj.b = 12;
+
+delete myobj.a;
+console.log ('a' in myobj); // yields "false"
+```
+### Comparing Objects
+In JavaScript, objects are a reference type. Two distinct objects are never equal, even if they have the same properties. Only comparing the same object reference with itself yields true.
+```
+// Two variables, two distinct objects with the same properties
+var fruit = {name: 'apple'};
+var fruitbear = {name: 'apple'};
+
+fruit == fruitbear; // return false
+fruit === fruitbear; // return false
+```
+```
+// Two variables, a single object
+var fruit = {name: 'apple'};
+var fruitbear = fruit;  // assign fruit object reference to fruitbear
+
+// here fruit and fruitbear are pointing to same object
+fruit == fruitbear; // return true
+fruit === fruitbear; // return true
+```
+### Inheritance
+When it comes to inheritance, JavaScript only has one construct: objects. Each object has a private property which holds a link to another object called its **prototype**. That prototype object has a prototype of its own, and so on until an object is reached with `null` as its prototype. By definition, `null` has no prototype, and acts as the final link in this prototype chain.
+
+Nearly all objects in JavaScript are instances of Object which sits on the top of a prototype chain.
+```
+// Let's create an object o from function f with its own properties a and b:
+let f = function () {
+   this.a = 1;
+   this.b = 2;
+}
+let o = new f(); // {a: 1, b: 2}
+
+// add properties in f function's prototype
+f.prototype.b = 3;
+f.prototype.c = 4;
+
+console.log(o.a); // 1
+// Is there an 'a' own property on o? Yes, and its value is 1.
+
+console.log(o.b); // 2
+// Is there a 'b' own property on o? Yes, and its value is 2.
+// The prototype also has a 'b' property, but it's not visited. 
+// This is called Property Shadowing
+
+console.log(o.c); // 4
+// Is there a 'c' own property on o? No, check its prototype.
+// Is there a 'c' own property on o.[[Prototype]]? Yes, its value is 4.
+
+console.log(o.d); // undefined
+// Is there a 'd' own property on o? No, check its prototype.
+// Is there a 'd' own property on o.[[Prototype]]? No, check its prototype.
+// o.[[Prototype]].[[Prototype]] is Object.prototype and there is no 'd' property by default, check its prototype.
+// o.[[Prototype]].[[Prototype]].[[Prototype]] is null, stop searching,
+// no property found, return undefined.
+```
+### Using `Object.defineProperty()`
+This method allows a precise addition to or modification of a property on an object. Normal property addition through assignment creates properties which show up during property enumeration (`for...in` loop or `Object.keys` method), whose values may be changed, and which may be deleted. This method allows these extra details to be changed from their defaults. By default, values added using `Object.defineProperty()` are immutable.
+
+1. **configurable**: The configurable attribute controls at the same time whether the property can be deleted from the object and whether its attributes (other than `value` and `writable`) can be changed.
+2. **enumerable**: The enumerable property attribute defines whether the property is picked by `Object.assign()` or spread operator. For non-Symbols properties it also defines whether it shows up in a `for...in` loop and `Object.keys()` or not.
+3. **value**: The value associated with the property. Can be any valid JavaScript value (number, object, function, etc).
+4. **writable**: true if and only if the value associated with the property may be changed with an assignment operator.
+### Using `hasOwnProperty`
+Every object descended from `Object` inherits the `hasOwnProperty` method. This method can be used to determine whether an object has the specified property as a direct property of that object; unlike the in operator, this method does not check down the object's prototype chain.
+```
+o = new Object();
+o.propOne = null;
+o.hasOwnProperty('propOne');   // returns true
+o.propTwo = undefined;  
+o.hasOwnProperty('propTwo');   // returns true
+```
+### Using `getOwnPropertyNames`
+The Object.getOwnPropertyNames() method returns an array of all properties (including non-enumerable properties except for those which use Symbol) found directly upon a given object.
+```
+const object1 = {
+  a: 1,
+  b: 2,
+  c: 3
+};
+
+console.log(Object.getOwnPropertyNames(object1));
+// expected output: Array ["a", "b", "c"]
+```
+### Using `Object.keys`
+The `Object.keys()` method returns an array of a given object's own property names, in the same order as we get with a normal loop.
+```
+const object1 = {
+  a: 'somestring',
+  b: 42,
+  c: false
+};
+
+console.log(Object.keys(object1));
+// expected output: Array ["a", "b", "c"]
+```
+### Using `Object.entries()`
+`Object.entries()` returns an array whose elements are arrays corresponding to the enumerable property `[key, value]` pairs found directly upon object. The ordering of the properties is the same as that given by looping over the property values of the object manually.
+```
+const obj = { foo: 'bar', baz: 42 };
+console.log(Object.entries(obj)); // [ ['foo', 'bar'], ['baz', 42] ]
+```
+### Using `Object.seal()`
+The `Object.seal()` method seals an object, preventing new properties from being added to it and marking all existing properties as non-configurable. Values of present properties can still be changed as long as they are writable.
+
+```
+const object1 = {
+  property1: 42
+};
+
+Object.seal(object1);
+object1.property1 = 33;
+console.log(object1.property1);
+// expected output: 33
+
+delete object1.property1; // cannot delete when sealed
+console.log(object1.property1);
+// expected output: 33
+```
+By default, objects are extensible (new properties can be added to them). Sealing an object prevents new properties from being added and marks all existing properties as non-configurable. This has the effect of making the set of properties on the object fixed and immutable. Making all properties non-configurable also prevents them from being converted from data properties to accessor properties and vice versa, but it does not prevent the values of data properties from being changed. 
+
+Attempting to delete or add properties to a sealed object, or to convert a data property to accessor or vice versa, will fail, either silently or by throwing a TypeError (most commonly, although not exclusively, when in strict mode code).
+
+The `Object.isSealed()` method determines if an object is sealed.
+
+### Using `Object.freeze()`
+The `Object.freeze()` method freezes an object. A frozen object can no longer be changed; freezing an object prevents new properties from being added to it, existing properties from being removed, prevents changing the enumerability, configurability, or writability of existing properties, and prevents the values of existing properties from being changed. In addition, freezing an object also prevents its prototype from being changed. `freeze()` returns the same object that was passed in.
+```
+const object1 = {
+  property1: 42
+};
+
+const object2 = Object.freeze(object1);
+
+object2.property1 = 33;
+// Throws an error in strict mode
+
+console.log(object2.property1);
+// expected output: 42
+```
+The `Object.isFrozen()` determines if an object is frozen.
