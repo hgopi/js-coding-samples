@@ -10,6 +10,7 @@
 8. [Class](#class)
 9. [Promises](#promises)
 10. [Maps and Sets](#maps-and-sets)
+11. [Iterables and iterators](#iterables-and-iterators)
 
 ## Variable scope
 
@@ -1106,4 +1107,43 @@ ws.add(bar);
 
 ws.has(foo);    // true
 ws.has(bar);    // true
+```
+
+## Iterables and iterators
+ES6 introduces a new mechanism for traversing data: iteration. Two concepts are central to iteration:
+* An iterable is a data structure that wants to make its elements accessible to the public. It does so by implementing a method whose key is Symbol.iterator. That method is a factory for iterators.
+* An iterator is a pointer for traversing the elements of a data structure (think cursors in databases).
+
+`String`, `Array`, `TypedArray`, `Map` and `Set` are all built-in iterables, because each of their prototype objects implements an `@@iterator` method.
+
+### User-defined iterables
+We can make our own iterables like this:
+```
+var myIterable = {};
+myIterable[Symbol.iterator] = function* () {
+    yield 1;
+    yield 2;
+    yield 3;
+};
+[...myIterable]; // [1, 2, 3]
+```
+### Simple Iterator for an Array
+```
+function makeIterator(array) {
+    var nextIndex = 0;
+    
+    return {
+       next: function() {
+           return nextIndex < array.length ?
+               {value: array[nextIndex++], done: false} :
+               {done: true};
+       }
+    };
+}
+
+var it = makeIterator(['yo', 'ya']);
+
+console.log(it.next().value); // 'yo'
+console.log(it.next().value); // 'ya'
+console.log(it.next().done);  // true
 ```
