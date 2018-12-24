@@ -6,6 +6,8 @@
 4. [call, apply and bind](#call-apply-and-bind)
 5. [Functions](#functions)
 6. [Objects](#objects)
+7. [ES6](#es6)
+8. [Class](#class)
 
 ## Variable scope
 
@@ -541,3 +543,316 @@ console.log(object2.property1);
 // expected output: 42
 ```
 The `Object.isFrozen()` determines if an object is frozen.
+## ES6
+The ES6 is the sixth edition of the language and was released on June 2015. This edition includes many new features like class, modules, iterators, for/of loop, arrow functions, typed arrays, promises and reflection.
+### Arrow functions
+An arrow function expression has a shorter syntax than a function expression and does not have its own `this`, `arguments`, `super`, or `new.target`. These function expressions are best suited for non-method functions, and they cannot be used as constructors.
+```
+var materials = [
+  'Hydrogen',
+  'Helium',
+  'Lithium',
+  'Beryllium'
+];
+
+console.log(materials.map(material => material.length));
+// expected output: Array [8, 6, 7, 9]
+```
+Until arrow functions, every new function defined its own this value (based on how function was called, a new object in the case of a constructor, `undefined` in strict mode function calls, the base object if the function is called as an "object method", etc.). This proved to be less than ideal with an object-oriented style of programming.
+```
+function Person() {
+  // The Person() constructor defines `this` as an instance of itself.
+  this.age = 0;
+
+  setInterval(function growUp() {
+    // In non-strict mode, the growUp() function defines `this` 
+    // as the global object (because it's where growUp() is executed.), 
+    // which is different from the `this`
+    // defined by the Person() constructor. 
+    this.age++;
+  }, 1000);
+}
+
+var p = new Person();
+```
+Arrow functions cannot be used as constructors and will throw an error when used with `new`.
+```
+var Foo = () => {};
+var foo = new Foo(); // TypeError: Foo is not a constructor
+```
+### Default function parameters 
+Default function parameters allow named parameters to be initialized with default values if no value or undefined is passed.
+```
+function multiply(a, b = 1) {
+  return a * b;
+}
+
+console.log(multiply(5, 2));
+// expected output: 10
+
+console.log(multiply(5));
+// expected output: 5
+```
+Parameters defined beforehand (to the left) are available to later default parameters:
+```
+function greet(name, greeting, message = greeting + ' ' + name) {
+    return [name, greeting, message];
+}
+
+greet('David', 'Hi');  // ["David", "Hi", "Hi David"]
+greet('David', 'Hi', 'Happy Birthday!');  // ["David", "Hi", "Happy Birthday!"]
+```
+### Shorted method definitions
+Starting with ES6, a shorter syntax for method definitions on objects initializers is introduced. It is a shorthand for a function assigned to the method's name.
+```
+var obj = {
+  foo() {
+    return 'bar';
+  }
+}
+
+console.log(obj.foo());
+// expected output: "bar"
+```
+### Spread (`...`) parameter
+The rest parameter syntax allows us to represent an indefinite number of arguments as an array.
+```
+function sum(...theArgs) {
+  return theArgs.reduce((previous, current) => {
+    return previous + current;
+  });
+}
+
+console.log(sum(1, 2, 3));
+// expected output: 6
+
+console.log(sum(1, 2, 3, 4));
+// expected output: 10
+```
+The destructuring assignment syntax is a JavaScript expression that makes it possible to unpack values from arrays, or properties from objects, into distinct variables.
+```
+[a, b] = [10, 20];
+
+console.log(a);
+// expected output: 10
+
+console.log(b);
+// expected output: 20
+
+[a, b, ...rest] = [10, 20, 30, 40, 50];
+
+console.log(rest);
+// expected output: [30,40,50]
+```
+
+### Proxy Object
+The Proxy object is used to define custom behavior for fundamental operations (e.g. property lookup, assignment, enumeration, function invocation, etc). The syntax is:
+```
+var p = new Proxy(target, handler);
+```
+A target object to wrap with Proxy. It can be any sort of object, including a native array, a function or even another proxy. `handler` is an object whose properties are functions which define the behavior of the proxy when an operation is performed on it.
+
+In the below example the number 37 gets returned as the default value when the property name is not in the object. It is using the get handler.
+
+```
+var handler = {
+    get: function(obj, prop) {
+        return prop in obj ?
+            obj[prop] :
+            37;
+    }
+};
+
+var p = new Proxy({}, handler);
+p.a = 1;
+p.b = undefined;
+
+console.log(p.a, p.b); // 1, undefined
+console.log('c' in p, p.c); // false, 37
+```
+### Reflect
+Reflect is a built-in object that provides methods for interceptable JavaScript operations. The methods are the same as those of proxy handlers. Reflect is not a function object, so it's not constructible.
+
+For example, the static `Reflect.apply()` method calls a target function with arguments as specified
+```
+console.log(Reflect.apply(Math.floor, undefined, [1.75]));
+// expected output: 1
+
+console.log(Reflect.apply(String.fromCharCode, undefined, [104, 101, 108, 108, 111]));
+// expected output: "hello"
+
+console.log(Reflect.apply(RegExp.prototype.exec, /ab/, ['confabulation']).index);
+// expected output: 4
+
+console.log(Reflect.apply(''.charAt, 'ponies', [3]));
+// expected output: "i"
+```
+Another static method, `Reflect.construct()` method acts like the `new` operator, but as a function. It is equivalent to calling `new target(...args)`. It gives also the added option to specify a different prototype.
+```
+function func1(a, b, c) {
+  this.sum = a + b + c;
+}
+
+const args = [1, 2, 3];
+const object1 = new func1(...args);
+const object2 = Reflect.construct(func1, args);
+
+console.log(object2.sum);
+// expected output: 6
+
+console.log(object1.sum);
+// expected output: 6
+```
+## Class
+JavaScript classes, introduced in ES6, are primarily syntactical sugar over JavaScript's existing prototype-based inheritance. The class syntax does not introduce a new object-oriented inheritance model to JavaScript.
+### Class Declarations
+To declare a class, you use the class keyword with the name of the class
+```
+class Rectangle {
+  constructor(height, width) {
+    this.height = height;
+    this.width = width;
+  }
+}
+```
+An important difference between function declarations and class declarations is that function declarations are hoisted and class declarations are not. You first need to declare your class and then access it, otherwise code like the following will throw a `ReferenceError`:
+```
+const p = new Rectangle(); // ReferenceError
+class Rectangle {}
+```
+We can declare methods and `getter` as follow:
+```
+class Rectangle {
+  constructor(height, width) {
+    this.height = height;
+    this.width = width;
+  }
+  // Getter
+  get area() {
+    return this.calcArea();
+  }
+  // Method
+  calcArea() {
+    return this.height * this.width;
+  }
+}
+
+const square = new Rectangle(10, 10);
+
+console.log(square.area); // 100
+```
+### Constructors
+The `constructor` method is a special method for creating and initializing an object created within a `class`. There can be only one special method with the name "constructor" in a class. Having more than one occurrence of a constructor method in a class will throw a SyntaxError error.
+```
+class Polygon {
+  constructor() {
+    this.name = "Polygon";
+  }
+}
+
+var poly1 = new Polygon();
+
+console.log(poly1.name);
+// expected output: "Polygon"
+```
+A constructor can use the super keyword to call the constructor of a parent class. If you do not specify a constructor method, a default constructor is used.
+### Static methods
+The `static` keyword defines a static method for a class. Static methods are called without instantiating their class and cannot be called through a class instance. Static methods are often used to create utility functions for an application.
+```
+class Point {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  static distance(a, b) {
+    const dx = a.x - b.x;
+    const dy = a.y - b.y;
+
+    return Math.hypot(dx, dy);
+  }
+}
+
+const p1 = new Point(5, 5);
+const p2 = new Point(10, 10);
+
+console.log(Point.distance(p1, p2)); // 7.0710678118654755
+```
+### Sub classing with extends
+The `extends` keyword is used in class declarations or class expressions to create a class as a child of another class.
+```
+class Animal { 
+  constructor(name) {
+    this.name = name;
+  }
+  
+  speak() {
+    console.log(this.name + ' makes a noise.');
+  }
+}
+
+class Dog extends Animal {
+  constructor(name) {
+    super(name); // call the super class constructor and pass in the name parameter
+  }
+
+  speak() {
+    console.log(this.name + ' barks.');
+  }
+}
+
+let d = new Dog('Mitzie');
+d.speak(); // Mitzie barks.
+```
+If there is a constructor present in the subclass, it needs to first call `super()` before using "this".
+### Default constructors for classes 
+If you don’t specify a constructor for a base class, the following definition is used:
+```
+constructor() {}
+```
+For derived classes, the following default constructor is used:
+```
+constructor(...args) {
+    super(...args);
+}
+```
+### Referring to superproperties in methods 
+The following ES6 code makes a supermethod call in line B.
+```
+class Person {
+    constructor(name) {
+        this.name = name;
+    }
+    toString() { // (A)
+        return `Person named ${this.name}`;
+    }
+}
+
+class Employee extends Person {
+    constructor(name, title) {
+        super(name);
+        this.title = title;
+    }
+    toString() {
+        return `${super.toString()} (${this.title})`; // (B)
+    }
+}
+
+const jane = new Employee('Jane', 'CTO');
+console.log(jane.toString()); // Person named Jane (CTO)
+```
+### Instantiate a class, given an Array of arguments
+What is the analog of `Function.prototype.apply()` for classes? That is, if I have a class `TheClass` and an Array `args` of arguments, how do I instantiate `TheClass`?
+
+One way of doing so is via the spread operator (`..`):
+```
+function instantiate(TheClass, args) {
+    return new TheClass(...args);
+}
+```
+Another option is to use Reflect.construct():
+```
+function instantiate(TheClass, args) {
+    return Reflect.construct(TheClass, args);
+}
+```
