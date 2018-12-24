@@ -707,7 +707,18 @@ for (const x of iterable) {
 // a
 // b
 ```
-
+### Symbols
+ECMAScript 6 introduces a new primitive type: symbols. They are tokens that serve as unique IDs. You create symbols via the factory function `Symbol()`.
+```
+const symbol1 = Symbol();
+```
+`Symbol()` has an optional string-valued parameter that lets you give the newly created Symbol a description. That description is used when the symbol is converted to a string (via `toString()` or `String()`):
+```
+const symbol2 = Symbol('symbol2');
+String(symbol2)
+'Symbol(symbol2)'
+```
+Symbols are mainly used as unique property keys – a symbol never clashes with any other property key (symbol or string). For example, you can make an object iterable (usable via the `for-of` loop and other language mechanisms), by using the symbol stored in `Symbol.iterator` as the key of a method.
 ### `async` and `await` function
 The `async` function declaration defines an asynchronous function, which returns an `AsyncFunction` object. An asynchronous function is a function which operates asynchronously via the event loop, using an implicit Promise to return its result. 
 
