@@ -12,7 +12,7 @@
 10. [Maps and Sets](#maps-and-sets)
 11. [Iterables and iterators](#iterables-and-iterators)
 12. [Generators](#generators)
-12. [async and await function](#async-and-await-function)
+
 ## Variable scope
 
 The scope is the current context of execution. The context in which values and expressions are "visible," or can be referenced. If a variable or other expression is not "in the current scope," then it is unavailable for use. Scopes can also be layered in a hierarchy, so that child scopes have access to parent scopes, but not vice versa.
