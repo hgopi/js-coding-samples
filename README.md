@@ -8,6 +8,7 @@
 6. [Objects](#objects)
 7. [ES6](#es6)
 8. [Class](#class)
+9. [Promises](#promises)
 
 ## Variable scope
 
@@ -855,4 +856,134 @@ Another option is to use Reflect.construct():
 function instantiate(TheClass, args) {
     return Reflect.construct(TheClass, args);
 }
+```
+
+## Promises
+The Promise object represents the eventual completion (or failure) of an asynchronous operation, and its resulting value.
+
+A **Promise** is a proxy for a value not necessarily known when the promise is created. It allows you to associate handlers with an asynchronous action's eventual success value or failure reason. This lets asynchronous methods return values like synchronous methods: instead of immediately returning the final value, the asynchronous method returns a promise to supply the value at some point in the future.
+
+A Promise is in one of these states:
+* pending: initial state, neither fulfilled nor rejected.
+* fulfilled: meaning that the operation completed successfully.
+* rejected: meaning that the operation failed.
+
+### Creating Promise using Constructor
+A Promise object is created using the `new` keyword and its constructor.  This constructor takes as its argument a function, called the "executor function". This function should take two functions as parameters. The first of these functions (resolve) is called when the asynchronous task completes successfully and returns the results of the task as a value. The second (reject) is called when the task fails, and returns the reason for failure, which is typically an error object.
+```
+var promise1 = new Promise(function(resolve, reject) {
+  setTimeout(function() {
+    resolve('foo');
+  }, 300);
+});
+
+promise1.then(function(value) {
+  console.log(value);
+  // expected output: "foo"
+});
+
+console.log(promise1);
+// expected output: [object Promise]
+```
+### Promising HTTP requests:
+The following is a Promise-based function that performs an HTTP GET via the event-based `XMLHttpRequest` API:
+```
+function httpGetRequest(url) {
+    return new Promise(
+        function (resolve, reject) {
+            const request = new XMLHttpRequest();
+            request.onload = function () {
+                if (this.status === 200) {
+                    // Success
+                    resolve(this.response);
+                } else {
+                    // Something went wrong (404 etc.)
+                    reject(new Error(this.statusText));
+                }
+            };
+            request.onerror = function () {
+                reject(new Error(
+                    'XMLHttpRequest Error: '+this.statusText));
+            };
+            request.open('GET', url);
+            request.send();
+        });
+}
+```
+To use this:
+```
+httpGetRequest('http://example.com/file.txt')
+.then(
+    function (value) {
+        console.log('Contents: ' + value);
+    },
+    function (reason) {
+        console.error('Something went wrong', reason);
+    });
+```
+### Chaining Promises
+A promise can be chained by returning another promise. The flat version looks like this:
+```
+asyncFunc1()
+.then(function (value1) {
+    return asyncFunc2();
+})
+.then(function (value2) {
+    ···
+})
+```
+### Chaining and errors 
+There can be one or more `then()` method calls that don’t have error handlers. Then the error is passed on until there is an error handler.
+```
+asyncFunc1()
+.then(asyncFunc2)
+.then(asyncFunc3)
+.catch(function (reason) {
+    // Something went wrong above
+});
+```
+### Forking and joining via `Promise.all()`
+`Promise.all(iterable)` takes an iterable promises and returns a single Promise that resolves when all of the promises in the iterable argument have resolved or when the iterable argument contains no promises. It rejects with the reason of the first promise that rejects.
+```
+var promise1 = Promise.resolve(3);
+var promise2 = 42;
+var promise3 = new Promise(function(resolve, reject) {
+  setTimeout(resolve, 100, 'foo');
+});
+
+Promise.all([promise1, promise2, promise3]).then(function(values) {
+  console.log(values);
+});
+// expected output: Array [3, 42, "foo"]
+```
+### Timing out via `Promise.race()`
+The `Promise.race(iterable)` method returns a promise that resolves or rejects as soon as one of the promises in the iterable resolves or rejects, with the value or reason from that promise.
+```
+var promise1 = new Promise(function(resolve, reject) {
+    setTimeout(resolve, 500, 'one');
+});
+
+var promise2 = new Promise(function(resolve, reject) {
+    setTimeout(resolve, 100, 'two');
+});
+
+Promise.race([promise1, promise2]).then(function(value) {
+  console.log(value);
+  // Both resolve, but promise2 is faster
+});
+// expected output: "two"
+```
+### Finally `finally`
+Sometimes you want to perform an action independently of whether an error happened or not. For example, to clean up after you are done with a resource. That’s what the Promise method `finally()` is for, which works much like the finally clause in exception handling. Its callback receives no arguments, but is notified of either a resolution or a rejection.
+```
+createResource(···)
+.then(function (value1) {
+    // Use resource
+})
+.then(function (value2) {
+    // Use resource
+})
+.finally(function () {
+    // Clean up
+});
 ```
