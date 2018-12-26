@@ -1330,6 +1330,42 @@ function fibonacci(n){
 
 fibonacci(12); // 144
 ```
+### Find nth index value of fibonacci
+Given a number N return the index value of the Fibonacci sequence, where the sequence is:
+```
+1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, ...
+```
+The solution is:
+```
+function fib(n){
+  var x = 0;
+  var y = 1;
+  if(n <= 2){
+    return n-1;
+  }
+  for(var i = 0; i < n; i++){
+    var tempY = y;
+    y = tempY + x;
+    x = tempY;
+      
+  }
+  return y;
+}
+
+fib(4)
+// 5
+```
+To better performance, we can use memoization.
+```
+function fib(num, memo) {
+  memo = memo || {};
+
+  if (memo[num]) return memo[num];
+  if (num <= 1) return 1;
+
+  return memo[num] = fib(num - 1, memo) + fib(num - 2, memo);
+}
+```
 ### Find Greatest Common Divisor
 Using Euclidean algorithm:
 ```
