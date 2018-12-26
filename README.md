@@ -12,8 +12,8 @@
 10. [Maps and Sets](#maps-and-sets)
 11. [Iterables and iterators](#iterables-and-iterators)
 12. [Generators](#generators)
-13. [Coding Problems](#coding-problems)
-14. [Sorting Algorithms](#sorting-algorithms)
+13. [Sorting Algorithms](#sorting-algorithms)
+14. [Coding Problems](#coding-problems)
 
 ## Variable scope
 
