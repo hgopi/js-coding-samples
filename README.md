@@ -1550,3 +1550,142 @@ function permut(string) {
 let permutations = permut('xyz');
 // ["xyz", "xzy", "yxz", "yzx", "zxy", "zyx"]
 ```
+### Implement currying
+Curring is partial invocation of a function. Currying means first few arguments of a function is pre-processed and a function is returned. The returning function can add more arguments to the curried function. It's like if you have given one or two spice to the curry and cooked little bit, still you can add further spice to it. A simple example will look like
+```
+function addBase(base){
+  return function(num){
+    return base + num;
+  }
+}
+
+var addTen = addBase(10);
+addTen(5); //15
+addTen(80); //90
+addTen(-5); //5
+```
+### Check sum of two
+From a unsorted array, check whether there are any two numbers that will sum up to a given number.
+```
+function sumFinder(arr, sum){
+  var len = arr.length;
+  
+  for(var i =0; i<len-1; i++){  
+     for(var j = i+1;j<len; j++){
+        if (arr[i] + arr[j] == sum)
+            return true;
+     }
+  }
+  return false;
+}
+
+sumFinder([6,4,3,2,1,7], 9);
+// true
+sumFinder([6,4,3,2,1,7], 2);
+// false
+```
+Another way of doing, have an object where we will store the difference of sum and element. And then when we get to a new element and if we find the difference is the object, then we have a pair that sums up to the desired sum.
+```
+function sumFinder(arr, sum){
+  var differ = {}, 
+      len = arr.length,
+      substract;
+  
+  for(var i =0; i<len; i++){
+     substract = sum - arr[i];
+
+     if(differ[substract])
+       return true;       
+     else
+       differ[arr[i]] = true;
+  }
+  return false;
+}
+sumFinder([6,4,3,2,1,7], 9);
+// true
+sumFinder([6,4,3,2,1,7], 2);
+// false
+```
+### Identiy the output
+Explain what will the following code snippet output
+```
+var a = Person('a');
+var b = new Person('b');
+var c = Person;
+function Person(name) {
+     this.first_name = name;
+}
+
+console.log(a.first_name);
+console.log(b.first_name);
+console.log(c.first_name);
+```
+First of all, the function will be hoisted to top. The variable `a` will be `undefiend` and will throw error if we attempt to read `a.first_name`. Because executing the function `Person` without `new` returns `undefined`. 
+
+`b` is the right way to do this. It has the instantiated object and prints `b`.
+
+`c` just has the reference to the function and returns `undefined` because the function has no `first_name` property attached to it.
+### Most common word in a string
+Given a string of words, return the most common used word in it.
+```
+function mostCommonWord(inputString) {
+  let wordsCounter = {};
+  let mostCommonCounter = 0;
+  let mostCommonWord = "";
+  inputString.split(" ").forEach((word)=>{
+    wordsCounter[word] = wordsCounter[word] || 0;
+    wordsCounter[word]++;
+  });
+  Object.keys(wordsCounter).forEach((word)=>{
+    if (wordsCounter[word] > mostCommonCounter) {
+      mostCommonWord = word;
+      mostCommonCounter = wordsCounter[word];
+    }
+  });
+  return mostCommonWord;
+}
+```
+### Brackets match
+For the given string, determine if the strings of brackets in the input is valid or invalid by these criteria.
+```
+"([)]" // false
+"()" // true
+```
+The solution is
+```
+function isBalanced(str) {
+  var i, ch;
+
+  var bracketsMap = new Map();
+  bracketsMap.set(']', '[');
+  bracketsMap.set('}', '{');
+  bracketsMap.set(')', '(');
+
+  // Use the spread operator to transform a map into a 2D key-value Array.
+  var closingBrackets = [...bracketsMap.keys()];
+  var openingBrackets = [...bracketsMap.values()];
+
+  var temp = [];
+  var len = str.length;
+
+  for (i = 0; i < len; i++) {
+    ch = str[i];
+
+    if (openingBrackets.indexOf(ch) > -1) {
+      temp.push(ch);
+    } else if (closingBrackets.indexOf(ch) > -1) {
+
+      var expectedBracket = bracketsMap.get(ch);
+      if (temp.length === 0 || (temp.pop() !== expectedBracket)) {
+        return false;
+      }
+
+    } else {
+      // Ignore the characters which do not match valid Brackets symbol
+      continue;
+    }
+  }
+
+  return (temp.length === 0);
+}
+```
