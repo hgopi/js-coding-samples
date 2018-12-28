@@ -2458,6 +2458,23 @@ function mostCommonWord(inputString) {
   return mostCommonWord;
 }
 ```
+### Creating array with ascending integers
+You can use `Array.from()` to map, if you provide a mapping function as its second parameter.
+```
+Array.from(new Array(3), (x, i) => i)
+// [ 0, 1, 2 ]
+```
+Creating an arbitrary range of integers:
+```
+const START = 2, END = 5;
+Array.from(new Array(END - START), (x, i) => i + START)
+// [ 2, 3, 4 ]
+```
+Another way of creating an Array with ascending integers is via `.keys()`, which also treats holes as if they were `undefined` elements:
+```
+[...new Array(3).keys()]
+// [ 0, 1, 2 ]
+```
 ### Brackets match
 For the given string, determine if the strings of brackets in the input is valid or invalid by these criteria.
 ```
